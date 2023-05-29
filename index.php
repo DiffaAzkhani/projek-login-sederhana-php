@@ -2,6 +2,8 @@
 include 'koneksi.php';
 
 session_start();
+
+// Pengecekan apakah masih terdapat session username yang tersimpan
 if (isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
     $query = "SELECT * FROM user WHERE username = '$_SESSION[username]'";

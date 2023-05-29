@@ -3,6 +3,7 @@ include 'koneksi.php';
 
 session_start();
 
+// Pengecekan jika tombol submit di klik
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -10,11 +11,13 @@ if (isset($_POST['submit'])) {
 
     $query = "SELECT * FROM user WHERE username = '$username' AND password = '$passwordmd5'";
     $result = mysqli_query($koneksi, $query);
-    $ambilData = mysqli_fetch_array($result);
+    $ambilData = mysqli_fetch_assoc($result);
 
-    if ($username === $ambilData['username'] and $passwordmd5 = $ambilData['password']) {
+    // Pengecekan apakah username dan password sesuai pada data yang ada di database
+    if (!empty($ambilData) && $username === $ambilData['username'] && $passwordmd5 = $ambilData['password']) {
         $_SESSION['username'] = $username;
 
+        // Mengambil status user
         $status = $ambilData['status'];
         switch ($status) {
             case 'admin':
@@ -27,6 +30,8 @@ if (isset($_POST['submit'])) {
                 header('location: home-student.php');
         }
         exit;
+    } else {
+        $errorMessage = "Username atau Password Salah";
     }
 }
 
@@ -48,6 +53,13 @@ mysqli_close($koneksi);
     <h1 style="text-align: center">Diffa Azkhani (A12.2020.06496)</h1>
 
     <h3>Login</h3>
+
+    <!-- Menampilan Error jika terjadi kesalahan data username atau password -->
+    <?php
+    if (isset($errorMessage)) {
+        echo "<p style='color: red'>$errorMessage</p>";
+    }
+    ?>
 
     <form action="" method="post">
         <table>
